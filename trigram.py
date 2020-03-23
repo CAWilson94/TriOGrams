@@ -1,4 +1,6 @@
 from pprint import pprint
+import logging
+import random 
 
 class Trigram:
 
@@ -18,11 +20,35 @@ class Trigram:
         pprint(triDict)
         return (triDict)
 
+    def text_generator(self): 
+        """ probably want to use a generator for this... """ 
+        new_text = []
+        text_dictionary = self.findTrigrams()
+        value_pair = random.choice(list(text_dictionary.keys()))
+        new_text.append(value_pair)
+        try: 
+            while(text_dictionary.get(value_pair, None)):             
+                new_text.append(text_dictionary[value_pair][-1])
+                value_pair = value_pair.split(" ")[-1] + " " + new_text[-1]
+            final_text = " ".join(new_text)
+            print("done")
+            print(final_text)
+        except Exception as e: 
+            logging.warn("wit is going on: %s", e)
+        return final_text.split()
+
+    def text_generator_search_longest(self): 
+        best_results = self.text_generator()
+        for i in range(10):
+            results = self.text_generator() 
+            if len(results) > len(best_results):
+                best_results = results
+        print(f"The best results are length {len(best_results)}: {best_results}")
 
 def main():
     input = "I wish I may I wish I might"
     tri_o_gram = Trigram(input)
-    tri_o_gram.findTrigrams()
+    tri_o_gram.text_generator_search_longest()
 
 if __name__ == '__main__':
     main()
